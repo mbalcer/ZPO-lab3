@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,7 +54,14 @@ public class Main {
                 endTime = System.nanoTime();
             break;
             case 2:
-                System.out.println("Działa");
+                startTime = System.nanoTime();
+                ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_CONSUMER+NUMBER_OF_PRODUCER);
+                for (int i=0; i<NUMBER_OF_CONSUMER+NUMBER_OF_PRODUCER; i++) {
+                    executor.execute(new Task(itemList, i));
+                }
+                executor.shutdown();
+                while (!executor.isTerminated()) { }
+                endTime = System.nanoTime();
             break;
             case 3:
                 startTime = System.nanoTime();
