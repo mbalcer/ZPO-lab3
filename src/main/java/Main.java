@@ -55,17 +55,18 @@ public class Main {
             break;
             case 2:
                 startTime = System.nanoTime();
-                ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_CONSUMER+NUMBER_OF_PRODUCER);
-                for (int i=0; i<NUMBER_OF_CONSUMER+NUMBER_OF_PRODUCER; i++) {
-                    executor.execute(new Task(itemList, i));
-                }
+                ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_PRODUCER+NUMBER_OF_CONSUMER);
+                itemList.stream()
+                        .forEach(item -> {
+                            executor.submit(new Task(item));
+                        });
                 executor.shutdown();
                 while (!executor.isTerminated()) { }
                 endTime = System.nanoTime();
             break;
             case 3:
                 startTime = System.nanoTime();
-                itemList.parallelStream()
+                itemList.stream()
                         .forEach(item -> {
                             item.produceMe();
                             item.consumeMe();
